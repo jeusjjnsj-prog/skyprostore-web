@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyPro Store - Premium Digital Store</title>
+  <!-- Tailwind CSS & Font -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Kantumruy Pro', sans-serif; }
+    /* Skeleton Shimmer Effect ដូចគេ */
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background-color: #1e293b;
+    }
+    .skeleton::after {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      transform: translateX(-100%);
+      background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+      animation: shimmer 1.5s infinite;
+      content: '';
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen pb-20">
+
+  <!-- Navbar -->
+  <header class="sticky top-0 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 z-30 px-4 py-3 flex justify-between items-center max-w-md mx-auto">
+    <div class="flex items-center space-x-2">
+      <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-white shadow-lg shadow-sky-500/30">S</div>
+      <span class="font-bold text-lg tracking-wide">SkyPro Store</span>
+    </div>
+    <div class="relative cursor-pointer" onclick="toggleCart()">
+      <div class="bg-slate-800 p-2 rounded-full border border-slate-700">🛒</div>
+      <span id="cart-badge" class="absolute -top-1 -right-1 bg-sky-500 text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">1</span>
+    </div>
+  </header>
+
+  <!-- Banner -->
+  <main class="max-w-md mx-auto px-4 pt-4">
+    <div class="bg-gradient-to-r from-sky-600 to-indigo-600 rounded-2xl p-5 shadow-lg relative overflow-hidden mb-6">
+      <h1 class="text-xl font-bold mb-1">ស្វ័យប្រវត្តិកម្ម ២៤ ម៉ោង ⚡</h1>
+      <p class="text-xs text-sky-100">ស្កេនទូទាត់ប្រាក់ KHQR ទទួលបានគណនីភ្លាមៗ</p>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="font-bold text-slate-200">ទំនិញពេញនិយម 🔥</h2>
+      <span class="text-xs text-sky-400">ស្វ័យប្រវត្តិ</span>
+    </div>
+
+    <!-- Products Grid (ជាមួយ Skeleton Loading ចាប់ផ្តើម) -->
+    <div id="product-container" class="grid grid-cols-2 gap-3">
+      <!-- Skeleton ពេល Load ដំបូង -->
+      <div class="skeleton rounded-2xl h-56 p-3 flex flex-col justify-between border border-slate-800">
+        <div class="h-28 bg-slate-800/80 rounded-xl"></div>
+        <div class="space-y-2">
+          <div class="h-4 bg-slate-800/80 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-800/80 rounded w-1/2"></div>
+        </div>
+      </div>
+      <div class="skeleton rounded-2xl h-56 p-3 flex flex-col justify-between border border-slate-800">
+        <div class="h-28 bg-slate-800/80 rounded-xl"></div>
+        <div class="space-y-2">
+          <div class="h-4 bg-slate-800/80 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-800/80 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Slide Cart Checkout Drawer -->
+  <div id="cart-drawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-end transition-opacity duration-300 hidden opacity-0">
+    <div class="w-full max-w-md bg-slate-900 h-full p-5 flex flex-col justify-between overflow-y-auto border-l border-slate-800">
+      
+      <!-- Cart Header -->
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-lg">កន្ត្រកទំនិញស្វ័យប្រវត្តិ</h3>
+        <button onclick="toggleCart()" class="text-gray-400 hover:text-white text-xl">✕</button>
+      </div>
+
+      <!-- Step 1: Form បញ្ចូល Email -->
+      <div id="checkout-form" class="space-y-4 my-auto">
+        <div class="bg-slate-800/70 p-4 rounded-xl border border-slate-700/60">
+          <span class="text-xs text-sky-400 font-semibold" id="cart-item-badge">PREMIUM</span>
+          <h4 id="cart-item-name" class="font-bold text-white text-lg mt-1">Gemini AI Pro</h4>
+          <p id="cart-item-price" class="text-2xl font-bold text-sky-400 mt-2">$4.50</p>
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 font-semibold">Email ទទួលទំនិញ (Account / Key)</label>
+          <input id="cust-email" type="email" placeholder="youremail@gmail.com" class="w-full mt-1.5 p-3 rounded-xl bg-slate-800 border border-slate-700 focus:border-sky-500 outline-none text-sm">
+        </div>
+
+        <div>
+          <label class="text-xs text-slate-400 font-semibold">Telegram Username (សម្រាប់ Support)</label>
+          <input id="cust-tele" type="text" placeholder="@username" class="w-full mt-1.5 p-3 rounded-xl bg-slate-800 border border-slate-700 focus:border-sky-500 outline-none text-sm">
+        </div>
+
+        <button onclick="goToPayment()" class="w-full py-3.5 bg-sky-500 hover:bg-sky-400 rounded-xl font-bold text-sm shadow-lg shadow-sky-500/20 transition">
+          ទូទាត់ប្រាក់ឥឡូវនេះ (KHQR) ➔
+        </button>
+      </div>
+
+      <!-- Step 2: Dynamic KHQR Popup -->
+      <div id="checkout-qr" class="text-center my-auto space-y-4 hidden">
+        <span class="bg-red-600/20 text-red-400 border border-red-500/30 text-xs px-3 py-1 rounded-full font-bold">BAKONG KHQR</span>
+        <div class="bg-white p-4 rounded-2xl inline-block shadow-2xl">
+          <img id="qr-img" src="" alt="KHQR Code" class="w-52 h-52 mx-auto">
+        </div>
+        <p class="text-xs text-slate-400 animate-pulse">សូមស្កេនទូទាត់ប្រាក់ ប្រព័ន្ធនឹងទម្លាក់ទំនិញស្វ័យប្រវត្តិ...</p>
+        <div class="text-xs font-mono text-slate-500">ពេលវេលានៅសល់: <span id="timer" class="text-sky-400 font-bold">04:59</span></div>
+      </div>
+
+      <!-- Step 3: Instant Success Delivery -->
+      <div id="checkout-success" class="text-center my-auto space-y-4 hidden">
+        <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-2xl">✓</div>
+        <h3 class="text-xl font-bold text-white">ទូទាត់ប្រាក់ជោគជ័យ!</h3>
+        <div class="bg-slate-800 p-4 rounded-xl border border-emerald-500/30 text-left">
+          <p class="text-xs text-emerald-400 font-bold mb-1">ទិន្នន័យគណនីរបស់អ្នក៖</p>
+          <p id="result-key" class="font-mono bg-black/60 p-3 rounded-lg select-all break-all text-sky-300 text-sm">email: user@gemini.com | pass: SkyPro#2026</p>
+        </div>
+        <p class="text-xs text-slate-400">យើងបានផ្ញើច្បាប់ចម្លងទៅ Email របស់អ្នករួចរាល់ហើយ។</p>
+      </div>
+
+      <div class="text-center text-[11px] text-slate-500 pt-3 border-t border-slate-800">
+        🔒 ដំណើរការស្វ័យប្រវត្តិពេញលេញដោយ SkyPro Store
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // បញ្ជីទំនិញក្នុងហាង
+    const products = [
+      { id: 1, name: "Gemini AI Pro (18 ខែ)", price: 4.50, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80", badge: "លក់ដាច់បំផុត" },
+      { id: 2, name: "Canva Pro 1 ឆ្នាំ", price: 2.99, img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&q=80", badge: "ពេញនិយម" },
+      { id: 3, name: "CapCut Pro 1 ខែ", price: 2.42, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400&q=80", badge: "HOT" },
+      { id: 4, name: "ChatGPT Plus (Shared)", price: 5.00, img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80", badge: "ថ្មី" }
+    ];
+
+    let selectedProduct = products[0];
+
+    // បង្ហាញ Shimmer Skeleton Effect មួយភ្លែតមុន Load ចេញទំនិញ
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const container = document.getElementById('product-container');
+        container.innerHTML = products.map(p => `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between p-3">
+            <div>
+              <div class="relative">
+                <img src="${p.img}" class="h-28 w-full object-cover rounded-xl mb-2">
+                <span class="absolute top-2 left-2 bg-black/60 backdrop-blur-md text-[10px] font-bold text-sky-400 px-2 py-0.5 rounded-md">${p.badge}</span>
+              </div>
+              <h3 class="font-bold text-sm text-slate-100 line-clamp-1">${p.name}</h3>
+              <p class="text-sky-400 font-bold text-base mt-1">$${p.price.toFixed(2)}</p>
+            </div>
+            <button onclick="openCheckout(${p.id})" class="w-full mt-3 py-2 bg-slate-800 hover:bg-sky-500 rounded-xl text-xs font-semibold border border-slate-700 hover:border-transparent transition">
+              ទិញភ្លាមៗ ⚡
+            </button>
+          </div>
+        `).join('');
+      }, 700);
+    });
+
+    function toggleCart() {
+      const drawer = document.getElementById('cart-drawer');
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        setTimeout(() => drawer.classList.remove('opacity-0'), 10);
+      } else {
+        drawer.classList.add('opacity-0');
+        setTimeout(() => drawer.classList.add('hidden'), 300);
+      }
+    }
+
+    function openCheckout(id) {
+      selectedProduct = products.find(p => p.id === id);
+      document.getElementById('cart-item-name').innerText = selectedProduct.name;
+      document.getElementById('cart-item-price').innerText = '$' + selectedProduct.price.toFixed(2);
+      document.getElementById('checkout-form').classList.remove('hidden');
+      document.getElementById('checkout-qr').classList.add('hidden');
+      document.getElementById('checkout-success').classList.add('hidden');
+      toggleCart();
+    }
+
+    function goToPayment() {
+      const email = document.getElementById('cust-email').value;
+      if (!email) return alert('សូមបញ្ចូល Email របស់អ្នក!');
+
+      document.getElementById('checkout-form').classList.add('hidden');
+      document.getElementById('checkout-qr').classList.remove('hidden');
+
+      // បង្កើត QR កូដ (Demo)
+      const qrData = `KHQR-SKYPRO-AMOUNT-${selectedProduct.price}`;
+      document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
+
+      // Simulate: ភ្ញៀវស្កេនរួច ៥ វិនាទីក្រោយ ប្រព័ន្ធទម្លាក់ Key ភ្លាម
+      setTimeout(() => {
+        document.getElementById('checkout-qr').classList.add('hidden');
+        document.getElementById('checkout-success').classList.remove('hidden');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
